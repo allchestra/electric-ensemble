@@ -1,0 +1,12 @@
+{:tasks
+ {install
+  {:doc "Install frontend dependencies used by the Electric starter shell."
+   :task (shell "npm install")}
+
+  dev
+  {:doc "Start the Electric development process."
+   :task (clojure "-M:electric-dev")}
+  
+  clean
+  {:doc "Remove generated frontend assets."
+   :task (shell "rm -rf dist .shadow-cljs target")}}}
