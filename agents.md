@@ -22,5 +22,4 @@
  - 1 Can receive midi notes and display in a browser on a stave
  - 2 Will interpret midi notes according to the current key, rendering accidentals correctly
  - 3 TBD
- 
-# Agent - free space to write notes here  
+
