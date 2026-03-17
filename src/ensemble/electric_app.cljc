@@ -15,6 +15,9 @@
      (defonce !active-chord (atom 0))
 
      (defn- start-chord-clock []
+       "Starts the server-side chord timer for the demo score.
+
+       The clock advances the shared chord state every four seconds so connected clients stay in sync."
        (let [executor (Executors/newSingleThreadScheduledExecutor
                         (reify ThreadFactory
                           (newThread [_ runnable]
@@ -36,6 +39,9 @@
 
 #?(:cljs
    (defn- render-staff!
+     "Draws the current chord on a treble stave with a G major key signature.
+
+     Call this with a DOM element and a chord map whenever the displayed score should refresh."
      [element {:keys [notes]}]
      (let [flow (.-Flow js/Vex)
            Renderer (.-Renderer flow)
@@ -64,7 +70,11 @@
                      :padding (- (/ (.getWidth stave) 2) 24)}))
          (.draw voice context stave)))))
 
-(e/defn ScoreView [chord]
+(e/defn ScoreView
+  "Renders the current chord label and stave in the browser.
+
+  Pass a chord map with `:name` and `:notes` to show the current score state."
+  [chord]
   (dom/div
     (dom/props {:class "score-view"
                 :style {:background "#f6f1e8"
@@ -88,7 +98,11 @@
         (e/drain
           (render-staff! dom/node chord))))))
 
-(e/defn App []
+(e/defn App
+  "Mounts the Electric demo app into the browser root element.
+
+  The app watches server-owned chord state and presents it as a client-rendered VexFlow score."
+  []
   (e/$ dom/With
     (e/client (.getElementById js/document "app"))
     (e/fn []

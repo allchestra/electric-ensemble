@@ -9,11 +9,16 @@
             [hiccup2.core :as hiccup2]))
 
 (defn devices
+  "Returns the MIDI devices visible to the current JVM.
+
+  Use this as the starting point for discovery before opening or filtering devices."
   []
   (seq (MidiSystem/getMidiDeviceInfo)))
 
 (defn search-inputs
-  "Find the input with the given name"
+  "Finds MIDI input devices whose name or description matches the search text.
+
+  Pass a case-insensitive fragment such as a device brand or model name."
   [s]
   (->> (for [device (devices)
              :let [{:keys [name description]} (bean device)
@@ -32,6 +37,9 @@
     :name "Seaboard"}])
 
 (defn register-instruments
+  "Opens and registers the configured MIDI inputs with Objection.
+
+  Call this during setup so named devices can be retrieved later by alias."
   []
   (doseq [{:keys [search alias name]} my-inputs
           :let [device (-> (search-inputs search)
@@ -46,7 +54,9 @@
   (obj/status))
 
 (defn transmitter
-  "Get the transmitter for the device, registering it"
+  "Returns a registered transmitter for an opened MIDI device.
+
+  Use this before attaching a receiver so transmitter instances are reused consistently."
   [device]
   (let [{:keys [id]} (obj/id device)]
     (or (obj/object [:transmitter id])
@@ -68,8 +78,9 @@
    ShortMessage/PROGRAM_CHANGE :program-change})
 
 (defn- calculate-14-bit-value
-  "Calculates the the 14 bit value given two integers 
-representing the high and low parts of a 14 bit value."
+  "Combines the low and high 7-bit MIDI values into one 14-bit value.
+
+  Use this when decoding MIDI messages such as pitch bend that split one value across two bytes."
   [lower higher]
   (bit-or (bit-and lower 0x7f)
           (bit-shift-left (bit-and higher 0x7f) 
@@ -77,7 +88,9 @@ representing the high and low parts of a 14 bit value."
 
 
 (defn interpret-pitch
-  "Interprets a pitch as a note in a key"
+  "Placeholder for spelling a MIDI pitch in the context of a key.
+
+  This is intended to turn raw pitches into notation-aware note names for stave rendering."
   [key pitch]
   (let [modal-adjustments {1 :flat
                            3 :flat
@@ -86,7 +99,9 @@ representing the high and low parts of a 14 bit value."
                            10 :flat}]))
 
 (defn decode-midi-message
-  "Takes a message, and returns a map"
+  "Converts a `ShortMessage` into a map of musical fields.
+
+  Use this to work with command, channel, and data bytes without manual MIDI decoding."
   [message]
   (let [command (-> (.getCommand message) midi-command)
         channel (.getChannel message)
@@ -136,7 +151,9 @@ voice.draw(context, stave);
 )]]))
 
 (defn open-html
-  "Writes the html to a file and opens it in the default browser"
+  "Writes HTML to a temporary file and opens it in the default browser.
+
+  Use this for quick notation or rendering experiments outside the main app."
   [html]
   (let [file (File/createTempFile "test" ".html")]
     (spit file html)
@@ -158,6 +175,9 @@ voice.draw(context, stave);
                   (close [this]))))
 
 (defn tap-tempo
+  "Returns a tap function that estimates tempo from recent taps.
+
+  Call the returned function on successive beats to receive an approximate BPM."
   []
   (let [state (atom '())]
     (fn tap []
@@ -170,6 +190,9 @@ voice.draw(context, stave);
                      gap))))))))
 
 (defn track-tempo
+  "Prints a tapped tempo from `:note-on` events arriving on a MIDI device.
+
+  Use this for quick tempo experiments by attaching it to an opened input device."
   [device]
   (let [pulse (tap-tempo)]
     (.setReceiver (transmitter device)

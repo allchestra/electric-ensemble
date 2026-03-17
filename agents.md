@@ -11,6 +11,7 @@
  - Keep `changelog.md` as a squashed summary of the branch outcome. Rewrite it to describe the final result only, not the sequence of intermediate fixes.
  - Keep `spec.md` as a squashed formal specification of the current intended behaviour. Update it in place so it reflects the latest agreed design rather than accumulating history.
  - Before finalizing a branch, make sure the branch commit, `changelog.md`, and `spec.md` all describe the same final state.
+ - Add a docstring to every function. Docstrings should state what the function is for, why it exists, and how to use it, without describing the implementation.
  
 # Purpose
  - An application for distributing musical notes over an ensemble. 
@@ -22,4 +23,3 @@
  - 1 Can receive midi notes and display in a browser on a stave
  - 2 Will interpret midi notes according to the current key, rendering accidentals correctly
  - 3 TBD
-
