@@ -108,8 +108,8 @@
     (e/fn []
       (let [chord (e/server (get chord-cycle (e/watch !active-chord)))]
         (dom/main
-          (dom/props {:class "electric-shell"
-                      :style {:font-family "\"Iowan Old Style\", \"Palatino Linotype\", serif"
+         (dom/props {:class "electric-shell"
+                     :style {:font-family "\"Iowan Old Style\", \"Palatino Linotype\", serif"
                               :padding "3rem 1.5rem 4rem"
                               :margin "0 auto"
                               :max-width "640px"

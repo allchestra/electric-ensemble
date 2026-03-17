@@ -7,21 +7,5 @@ As a player - play a midi instrument, and the notes will be distributed to perfo
 
 As a performer - join a real world session, and subscribe to play or sing the notes from the player. 
 
-## Plan 
 
-### Solo
-* [x] Receiving midi input events
-* [x] Render notes
-* [ ] Interpret midi notes in the context of the current scale.
-
-### With Electric Team
-* [ ] Port to electric starter
-* [ ] Show live notes in browser
-* [ ] Split notes across different staves (single screen)
-* [ ] Allow player to join the session and choose their range
-* [ ] Split across machines
-
-
-## Extension
-Use pressure to send other messages e.g. volume, articulation. 
-
+WIP experiment using electric clojure and codex. 
